@@ -1,90 +1,22 @@
 package dam.recordConnection;
 
+import dam.recordConnection.ConnectionBuilder;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-/*
-author: Tran Duc Anh
-description: This package is used to connect to the database
-using design pattern Builder, Singleton
-*/
-
-/*
-author: Tran Duc Anh
-description: Class ConnectionBuilder is used to connect to the database
-    using design pattern Builder to create a connection,
-    using with Singleton to prevent creating multiple instances of the class
-*/
-class ConnectionBuilder(){
-    private String driver;
-    private String url;
-    private String user;
-    private String password;
-
-    private static ConnectionBuilder instance = null;
-
-    private ConnectionBuilder(){
-        this.driver = "";
-        this.url = "";
-        this.user = "";
-        this.password = "";
-    }
-
-    public static ConnectionBuilder getInstance(){
-        if(instance == null){
-            instance = new ConnectionBuilder();
-        }
-        return instance;
-    }
-
-    public ConnectionBuilder setDriver(String driver){
-        this.driver = driver;
-        return this;
-    }
-
-    public ConnectionBuilder setUrl(String url){
-        this.url = url;
-        return this;
-    }
-
-    public ConnectionBuilder setUser(String user){
-        this.user = user;
-        return this;
-    }
-
-    public ConnectionBuilder setPassword(String password){
-        this.password = password;
-        return this;
-    }
-
-    public Connection getConnection(){
-        Connection conn = null;
-        try{
-            Class.forName(this.driver);
-            conn = DriverManager.getConnection(this.url, this.user, this.password);
-        }catch(ClassNotFoundException e){
-            System.out.println("Class not found");
-        }catch(SQLException e){
-            System.out.println("SQL Exception");
-        }
-        return conn;
-    }
-}
-
 /* 
 author: Tran Duc Anh
 description: class Director read data from file ./configuration.xml
     and set data to ConnectionBuilder
 */
-class Director{
+public class Director{
     private ConnectionBuilder builder;
 
     public Director(){
@@ -135,5 +67,9 @@ class Director{
 
     public Connection getConnection(){
         return this.builder.getConnection();
+    }
+
+    public void closeConnection(){
+        this.builder.closeConnection();
     }
 }
