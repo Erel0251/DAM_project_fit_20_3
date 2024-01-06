@@ -1,0 +1,7 @@
+<!-- Store data to connect to database if user using Director instead of Manual Builder -->
+<database-connection>
+    <driver>com.mysql.jdbc.Driver</driver>
+    <url>jdbc:mysql://localhost:3306/recordconnection</url>
+    <user>root</user>
+    <password>root</password>
+</database-connection>
