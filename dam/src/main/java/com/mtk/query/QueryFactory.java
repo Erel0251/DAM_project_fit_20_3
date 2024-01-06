@@ -5,7 +5,7 @@ public class QueryFactory {
     public static Query createQuery(QueryType type) {
         switch (type) {
             case SELECT:
-                return new SelectQuery();
+                break;
 
             case INSERT:
                 break;
