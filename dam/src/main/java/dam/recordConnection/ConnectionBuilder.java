@@ -64,5 +64,14 @@ public class ConnectionBuilder(){
         }
         return conn;
     }
+
+    // Close connection
+    public void closeConnection(Connection conn){
+        try{
+            conn.close();
+        }catch(SQLException e){
+            System.out.println("SQL Exception");
+        }
+    }
 }
 

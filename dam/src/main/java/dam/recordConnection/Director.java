@@ -2,6 +2,8 @@ package dam.recordConnection;
 
 import dam.recordConnection.ConnectionBuilder;
 
+import java.sql.Connection;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -65,5 +67,9 @@ public class Director{
 
     public Connection getConnection(){
         return this.builder.getConnection();
+    }
+
+    public void closeConnection(){
+        this.builder.closeConnection();
     }
 }
