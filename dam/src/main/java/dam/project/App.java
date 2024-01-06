@@ -1,6 +1,12 @@
 package dam.project;
 
 import dam.recordConnection.*;
+import dam.recordManager.*;
+import dam.query.*;
+import dam.mapping.*;
+
+import java.sql.Connection;
+
 
 /**
  * Hello world!
@@ -15,14 +21,18 @@ public class App
         ConnectionBuilder connBuilder = ConnectionBuilder.getInstance();
         Connection connection = connBuilder
             .setDriver("com.mysql.jdbc.Driver")
-            .setUrl("jdbc:mysql://localhost:3306/record")
+            .setHostName("localhost")
+            .setPort("3306")
+            .setDatabase("dam")
             .setUser("root")
             .setPassword("root")
             .getConnection();
 
         // Example using properties in preset config file
+        /*
         Director director = new Director();
         director.getConfiguration("./configuration.xml");
         Connection connection = director.getConnection();
+        */
     }
 }

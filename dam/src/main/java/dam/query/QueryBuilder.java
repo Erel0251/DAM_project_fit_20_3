@@ -1,13 +1,15 @@
-package dam.recordManager;
+package dam.query;
 
-import dam.recordManager.*;
+import dam.recordConnection.ConnectionBuilder;
+import java.sql.Connection;
+
 /*
 author: Tran Duc Anh
 description: Class QueryBuilder is used to create a query,
 create some basic query SELECT, FROM, WHERE, ORDER BY, LIMIT
 then execute it to create a ResultSet
 */
-public class QueryBuilder(){
+public class QueryBuilder {
     private StringBuilder query;
     private Connection conn;
 
@@ -17,17 +19,17 @@ public class QueryBuilder(){
     }
 
     public QueryBuilder select(String column){
-        this.query.append(`SELECT ${column} `);
+        this.query.append("Select " + column + " ");
         return this;
     }
 
     public QueryBuilder from(String table){
-        this.query.append(`FROM ${table} `);
+        this.query.append("From " + table + " ");
         return this;
     }
 
     public QueryBuilder where(String condition){
-        this.query.append(`WHERE ${condition} `);
+        this.query.append("Where " + condition + " ");
         return this;
     }
 

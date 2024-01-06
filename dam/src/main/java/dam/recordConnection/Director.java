@@ -4,6 +4,7 @@ import dam.recordConnection.ConnectionBuilder;
 
 import java.sql.Connection;
 
+import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -27,7 +28,7 @@ public class Director{
         this.builder = builder;
     }
 
-    public void getConfiguration(String path = "./configuration.xml"){
+    public void getConfiguration(String path){
         // read data from file xml
         try {
             File xmlFile = new File(path);
@@ -47,13 +48,17 @@ public class Director{
                     Element eElement = (Element) nNode;
 
                     String driver = eElement.getElementsByTagName("driver").item(0).getTextContent();
-                    String url = eElement.getElementsByTagName("url").item(0).getTextContent();
+                    String hostName = eElement.getElementsByTagName("hostName").item(0).getTextContent();
+                    String port = eElement.getElementsByTagName("port").item(0).getTextContent();
+                    String database = eElement.getElementsByTagName("database").item(0).getTextContent();
                     String user = eElement.getElementsByTagName("user").item(0).getTextContent();
                     String password = eElement.getElementsByTagName("password").item(0).getTextContent();
-                    this.builder.setDriver(driver);
-                    this.builder.setUrl(url);
-                    this.builder.setUser(user);
-                    this.builder.setPassword(password);
+                    this.builder.setDriver(driver)
+                                .setHostName(hostName)
+                                .setPort(port)
+                                .setDatabase(database)
+                                .setUser(user)
+                                .setPassword(password);
                 }
             }
         } catch (Exception e) {
@@ -61,7 +66,7 @@ public class Director{
         }
     }
 
-    public setConnectionBuilder(ConnectionBuilder builder){
+    public void setConnectionBuilder(ConnectionBuilder builder){
         this.builder = builder;
     }
 
@@ -69,7 +74,7 @@ public class Director{
         return this.builder.getConnection();
     }
 
-    public void closeConnection(){
-        this.builder.closeConnection();
+    public void closeConnection(Connection conn){
+        this.builder.closeConnection(conn);
     }
 }

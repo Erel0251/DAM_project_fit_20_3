@@ -10,19 +10,24 @@ description: Class ConnectionBuilder is used to connect to the database
     using design pattern Builder to create a connection,
     using with Singleton to prevent creating multiple instances of the class
 */
-public class ConnectionBuilder(){
+public class ConnectionBuilder {
     private String driver;
-    private String url;
+    private String hostName;
+    private String port;
+    private String database;
     private String user;
     private String password;
+    private String url;
 
     private static ConnectionBuilder instance = null;
 
     private ConnectionBuilder(){
         this.driver = "";
-        this.url = "";
-        this.user = "";
-        this.password = "";
+        this.hostName = "";
+        this.port = "";
+        this.database = "";
+        this.user = "root";
+        this.password = "root";
     }
 
     public static ConnectionBuilder getInstance(){
@@ -37,8 +42,18 @@ public class ConnectionBuilder(){
         return this;
     }
 
-    public ConnectionBuilder setUrl(String url){
-        this.url = url;
+    public ConnectionBuilder setHostName(String hostName){
+        this.hostName = hostName;
+        return this;
+    }
+
+    public ConnectionBuilder setPort(String port){
+        this.port = port;
+        return this;
+    }
+
+    public ConnectionBuilder setDatabase(String database){
+        this.database = database;
         return this;
     }
 
@@ -54,6 +69,24 @@ public class ConnectionBuilder(){
 
     public Connection getConnection(){
         Connection conn = null;
+        // depending on the database that you use, you need to change the driver
+        // and the url
+        switch(this.driver){
+            case "com.mysql.jdbc.Driver":
+                this.url = "jdbc:mysql://" + this.hostName + ":" + this.port + "/" + this.database;
+                break;
+            case "oracle.jdbc.driver.OracleDriver":
+                this.url = "jdbc:oracle:thin:@" + this.hostName + ":" + this.port + ":" + this.database;
+                break;
+            case "com.microsoft.sqlserver.jdbc.SQLServerDriver":
+                this.url = "jdbc:sqlserver://" + this.hostName + ":" + this.port + ";databaseName=" + this.database;
+                break;
+            default:
+                System.out.println("Driver is not defined");
+                break;
+        }
+
+
         try{
             Class.forName(this.driver);
             conn = DriverManager.getConnection(this.url, this.user, this.password);
