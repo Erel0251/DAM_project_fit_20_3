@@ -1,23 +1,20 @@
 package com.mtk.connect;
 
-import com.mtk.flatter.QueryFlatter;
-import com.mtk.query.Query;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @Getter
 @Setter
 public class RecordConnection {
 
-    private final QueryFlatter flatter;
-
     private final Connection connection;
 
-    public RecordConnection(QueryFlatter flatter, Connection connection) {
+    public RecordConnection(Connection connection) {
         this.connection = connection;
-        this.flatter = flatter;
     }
 
     public Object executeQuery(String query) {
