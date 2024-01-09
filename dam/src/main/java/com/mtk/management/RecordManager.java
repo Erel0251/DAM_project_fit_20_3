@@ -4,6 +4,7 @@ import com.mtk.connect.RecordConnection;
 import com.mtk.exception.UnsupportedActionException;
 import com.mtk.query.Query;
 import com.mtk.query.QueryType;
+import com.mtk.query.builder.QueryBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,35 +28,32 @@ public class RecordManager {
         this.recordConnection = connection;
     }
 
-    public Query createQuery(QueryType type) {
-        Query query = Query.builder(type).build();
-        queries.add(query);
-        return query;
+    public QueryBuilder createQuery(QueryType type, Object record) {
+        return null;
     }
 
-    public <T> List<T> executeQuery(Query query, Class<T> clazz)
+    public <T> List<T> executeQuery(QueryBuilder query, Class<T> clazz)
             throws SQLException, InstantiationException, IllegalAccessException, UnsupportedActionException, InvocationTargetException, NoSuchMethodException {
-        ResultSet resultSet = (ResultSet) recordConnection.execute(query);
+        ResultSet resultSet = (ResultSet) recordConnection.executeQuery(query.toString());
         return RecordMapper.map(resultSet, clazz);
     }
 
-    public void executeUpdate(Query query) {
-        recordConnection.execute(query);
+    public void executeUpdate(QueryBuilder query) {
+        recordConnection.executeUpdate(query.toString());
     }
 
     public void insert(Object record) {
-        Query newQuery = RecordMapper.toQuery(QueryType.INSERT, record);
-        executeUpdate(newQuery);
-        records.add(record);
+        QueryBuilder query = RecordMapper.toInsertQuery(record);
+        recordConnection.executeUpdate(query.build());
     }
 
     public void update(Object record) {
-        Query newQuery = createQuery(QueryType.UPDATE);
-        executeUpdate(newQuery);
+        QueryBuilder query = RecordMapper.toUpdateQuery(record);
+        recordConnection.executeUpdate(query.build());
     }
 
     public void delete(Object record) {
-        Query newQuery = createQuery(QueryType.DELETE);
-        executeUpdate(newQuery);
+        QueryBuilder query = RecordMapper.toDeleteQuery(record);
+        recordConnection.executeUpdate(query.build());
     }
 }

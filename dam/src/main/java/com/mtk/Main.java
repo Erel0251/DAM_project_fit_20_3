@@ -11,6 +11,7 @@ import com.mtk.management.RecordManager;
 import com.mtk.management.RecordManagerFactory;
 import com.mtk.query.Query;
 import com.mtk.query.QueryType;
+import com.mtk.query.builder.QueryBuilder;
 import com.mtk.sample.User;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,8 +42,8 @@ public class Main {
 //        User user = new User("1", "i");
 //        recordManager.save(user);
 //        recordManager.delete(user);
-        Query query = recordManager.createQuery(QueryType.SELECT);
-        query.setTable("user");
+        QueryBuilder query = QueryBuilder.select("*")
+                .from("user");
         List<User> users = recordManager.executeQuery(query, User.class);
         users.forEach(user -> {
             System.out.println(user.getId() + " " + user.getName());

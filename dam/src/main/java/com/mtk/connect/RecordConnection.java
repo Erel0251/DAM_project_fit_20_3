@@ -20,21 +20,21 @@ public class RecordConnection {
         this.flatter = flatter;
     }
 
-    public Object execute(Query query) {
+    public Object executeQuery(String query) {
         try {
             Statement statement = connection.createStatement();
-            String SQL = flatter.flat(query);
-            switch (query.getType()) {
-                case SELECT:
-                    return statement.executeQuery(SQL);
-                case INSERT:
-                case UPDATE:
-                case DELETE:
-                    return statement.executeUpdate(SQL);
-            }
+            return statement.executeQuery(query);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    public void executeUpdate(String query) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
