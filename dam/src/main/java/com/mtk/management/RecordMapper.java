@@ -4,8 +4,7 @@ import com.mtk.annotation.Column;
 import com.mtk.annotation.Id;
 import com.mtk.annotation.Record;
 import com.mtk.exception.UnsupportedActionException;
-import com.mtk.query.Query;
-import com.mtk.query.QueryType;
+import com.mtk.query.builder.QueryBuilder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,8 +12,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecordMapper {
 
@@ -33,13 +33,18 @@ public class RecordMapper {
                 String columnName = rsmd.getColumnName(_iterator + 1);
                 Object columnValue = rs.getObject(_iterator + 1);
                 for (Field field : fields) {
-                    if (!field.isAnnotationPresent(Column.class)) {
-                        continue;
-                    }
                     field.setAccessible(true);
-                    Column column = field.getAnnotation(Column.class);
-                    if (column.name().equalsIgnoreCase(columnName) && columnValue != null) {
-                        field.set(bean, columnValue);
+                    if (field.isAnnotationPresent(Column.class)) {
+                        Column column = field.getAnnotation(Column.class);
+                        if (column.name().equalsIgnoreCase(columnName) && columnValue != null) {
+                            field.set(bean, columnValue);
+                        }
+                    }
+                    if (field.isAnnotationPresent(Id.class)) {
+                        Id column = field.getAnnotation(Id.class);
+                        if (column.name().equalsIgnoreCase(columnName) && columnValue != null) {
+                            field.set(bean, columnValue);
+                        }
                     }
                 }
             }
@@ -48,34 +53,111 @@ public class RecordMapper {
         return data;
     }
 
-    public static <T> Query toQuery(QueryType type, T object) {
+    public static <T> QueryBuilder toInsertQuery(T object) {
         try {
-            Class<?> clazz = object.getClass();
+            Class<T> clazz = (Class<T>) object.getClass();
+            if (!clazz.isAnnotationPresent(Record.class)) {
+                throw new RuntimeException("No valid record.");
+            }
+            String tableName = clazz.getAnnotation(Record.class).table();
             Field[] fields = clazz.getDeclaredFields();
-            Object id = null;
+            for (Field field : fields) {
+                field.setAccessible(true);
+            }
+            Map<Object, Object> values = new HashMap<>();
             for (Field field : fields) {
                 field.setAccessible(true);
                 if (field.isAnnotationPresent(Id.class)) {
-                    id = field.get(object);
+                    Id column = field.getAnnotation(Id.class);
+                    Object idValue = field.get(object);
+                    if (idValue != null && field.getType().isAssignableFrom(String.class)) {
+                        idValue = "'" + idValue + "'";
+                    }
+                    values.put(column.name(), idValue);
+                }
+                if (field.isAnnotationPresent(Column.class)) {
+                    Column column = field.getAnnotation(Column.class);
+                    Object columnValue = field.get(object);
+                    if (columnValue != null && field.getType().isAssignableFrom(String.class)) {
+                        columnValue = "'" + columnValue + "'";
+                    }
+                    values.put(column.name(), columnValue);
                 }
             }
-            if (id == null) {
+            return QueryBuilder.insert(tableName).values(values);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Can't process query on record.");
+        }
+    }
+
+    public static <T> QueryBuilder toUpdateQuery(T object) {
+        try {
+            Class<?> clazz = object.getClass();
+            if (!clazz.isAnnotationPresent(Record.class)) {
+                throw new RuntimeException("No valid record.");
+            }
+            Field[] fields = clazz.getDeclaredFields();
+            Field idField = null;
+            Map<Object, Object> setters = new HashMap<>();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.isAnnotationPresent(Id.class)) {
+                    idField = field;
+                    Id column = field.getAnnotation(Id.class);
+                    Object idValue = field.get(object);
+                    if (idValue != null && field.getType().isAssignableFrom(String.class)) {
+                        idValue = "'" + idValue + "'";
+                    }
+                    setters.put(column.name(), idValue);
+                }
+                if (field.isAnnotationPresent(Column.class)) {
+                    Column column = field.getAnnotation(Column.class);
+                    Object columnValue = field.get(object);
+                    if (columnValue != null && field.getType().isAssignableFrom(String.class)) {
+                        columnValue = "'" + columnValue + "'";
+                    }
+                    setters.put(column.name(), columnValue);
+                }
+            }
+            if (idField == null) {
                 throw new RuntimeException("haha");
             }
-            switch (type) {
-                case SELECT:
-
-                    break;
-                case INSERT:
-                    break;
-                case UPDATE:
-                    break;
-                case DELETE:
-                    break;
-            }
+            String tableName = clazz.getAnnotation(Record.class).table();
+            return QueryBuilder.update(tableName)
+                    .setters(setters)
+                    .where(idField.getAnnotation(Id.class).name()
+                            + " = " + idField.get(object));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        throw new RuntimeException("Can't process query on record.");
+    }
+
+    public static <T> QueryBuilder toDeleteQuery(T object) {
+        try {
+            Class<?> clazz = object.getClass();
+            if (!clazz.isAnnotationPresent(Record.class)) {
+                throw new RuntimeException("No valid record.");
+            }
+            Field[] fields = clazz.getDeclaredFields();
+            Field idField = null;
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.isAnnotationPresent(Id.class)) {
+                    idField = field;
+                }
+            }
+            if (idField == null) {
+                throw new RuntimeException("No ID column. Please assign an id corresponding column!");
+            }
+            String tableName = clazz.getAnnotation(Record.class).table();
+            Object idValue = idField.get(object);
+            if (idField.getType().isAssignableFrom(String.class)) {
+                idValue = "'" + idValue + "'";
+            }
+            return QueryBuilder.delete(tableName)
+                    .where(idField.getAnnotation(Id.class).name() + " = " + idValue);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
