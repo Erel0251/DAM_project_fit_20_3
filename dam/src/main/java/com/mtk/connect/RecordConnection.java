@@ -1,40 +1,37 @@
 package com.mtk.connect;
 
-import com.mtk.flatter.QueryFlatter;
-import com.mtk.query.Query;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @Getter
 @Setter
 public class RecordConnection {
 
-    private final QueryFlatter flatter;
-
     private final Connection connection;
 
-    public RecordConnection(QueryFlatter flatter, Connection connection) {
+    public RecordConnection(Connection connection) {
         this.connection = connection;
-        this.flatter = flatter;
     }
 
-    public Object execute(Query query) {
+    public Object executeQuery(String query) {
         try {
             Statement statement = connection.createStatement();
-            String SQL = flatter.flat(query);
-            switch (query.getType()) {
-                case SELECT:
-                    return statement.executeQuery(SQL);
-                case INSERT:
-                case UPDATE:
-                case DELETE:
-                    return statement.executeUpdate(SQL);
-            }
+            return statement.executeQuery(query);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    public void executeUpdate(String query) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

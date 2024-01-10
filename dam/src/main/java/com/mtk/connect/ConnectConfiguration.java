@@ -3,6 +3,8 @@ package com.mtk.connect;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -23,21 +25,25 @@ public class ConnectConfiguration {
 
     public String toConnectString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("jdbc:");
-        stringBuilder.append(type.getValue());
-        stringBuilder.append("://");
-        stringBuilder.append(hostName);
-        stringBuilder.append(databaseName);
-//        if (params.size() > 0) {
-//            stringBuilder.append("?");
-//            for (Map.Entry<Object, Object> entry : params.entrySet()) {
-//                stringBuilder.append(entry.getKey());
-//                stringBuilder.append("=");
-//                stringBuilder.append(entry.getValue());
-//                stringBuilder.append("&");
-//            }
-//            stringBuilder.
-//        }
+        stringBuilder.append("jdbc:")
+                .append(type.getValue())
+                .append("://")
+                .append(hostName)
+                .append("/")
+                .append(databaseName);
+        if (!params.isEmpty()) {
+            stringBuilder.append("?");
+            List<Map.Entry<Object, Object>> entries = new ArrayList<>(params.entrySet());
+            for (int i = 0; i < entries.size(); ++i) {
+                Map.Entry<Object, Object> entry = entries.get(i);
+                stringBuilder.append(entry.getKey());
+                stringBuilder.append("=");
+                stringBuilder.append(entry.getValue());
+                if (i < entries.size() - 1) {
+                    stringBuilder.append("&");
+                }
+            }
+        }
         return stringBuilder.toString();
     }
 

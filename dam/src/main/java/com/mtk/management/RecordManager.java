@@ -2,8 +2,8 @@ package com.mtk.management;
 
 import com.mtk.connect.RecordConnection;
 import com.mtk.exception.UnsupportedActionException;
-import com.mtk.query.Query;
 import com.mtk.query.QueryType;
+import com.mtk.query.builder.QueryBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,43 +19,50 @@ public class RecordManager {
 
     private RecordConnection recordConnection;
 
-    private final List<Query> queries = new ArrayList<>();
-
     private final List<Object> records = new ArrayList<>();
 
     public RecordManager(RecordConnection connection) {
         this.recordConnection = connection;
     }
 
-    public Query createQuery(QueryType type) {
-        Query query = Query.builder(type).build();
-        queries.add(query);
-        return query;
+    public QueryBuilder createQuery(QueryType type) {
+        return createQuery(type, null);
     }
 
-    public <T> List<T> executeQuery(Query query, Class<T> clazz)
+    public QueryBuilder createQuery(QueryType type, Object record) {
+        switch (type) {
+            case INSERT:
+                return RecordMapper.toInsertQuery(record);
+            case UPDATE:
+                return RecordMapper.toUpdateQuery(record);
+            case DELETE:
+                return RecordMapper.toDeleteQuery(record);
+        }
+        return QueryBuilder.newQuery(type);
+    }
+
+    public <T> List<T> executeQuery(QueryBuilder query, Class<T> clazz)
             throws SQLException, InstantiationException, IllegalAccessException, UnsupportedActionException, InvocationTargetException, NoSuchMethodException {
-        ResultSet resultSet = (ResultSet) recordConnection.execute(query);
+        ResultSet resultSet = (ResultSet) recordConnection.executeQuery(query.build());
         return RecordMapper.map(resultSet, clazz);
     }
 
-    public void executeUpdate(Query query) {
-        recordConnection.execute(query);
+    public void executeUpdate(QueryBuilder query) {
+        recordConnection.executeUpdate(query.build());
     }
 
     public void insert(Object record) {
-        Query newQuery = RecordMapper.toQuery(QueryType.INSERT, record);
-        executeUpdate(newQuery);
-        records.add(record);
+        QueryBuilder query = createQuery(QueryType.INSERT, record);
+        executeUpdate(query);
     }
 
     public void update(Object record) {
-        Query newQuery = createQuery(QueryType.UPDATE);
-        executeUpdate(newQuery);
+        QueryBuilder query = createQuery(QueryType.UPDATE, record);
+        executeUpdate(query);
     }
 
     public void delete(Object record) {
-        Query newQuery = createQuery(QueryType.DELETE);
-        executeUpdate(newQuery);
+        QueryBuilder query = createQuery(QueryType.DELETE, record);
+        executeUpdate(query);
     }
 }
