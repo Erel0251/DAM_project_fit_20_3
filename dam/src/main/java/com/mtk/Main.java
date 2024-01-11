@@ -18,35 +18,44 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws OutOfConnectionException, SQLException, InstantiationException, IllegalAccessException, UnsupportedActionException, InvocationTargetException, NoSuchMethodException {
-        Map<Object, Object> params = new HashMap<>();
-        params.put("createDatabaseIfNotExist", "true");
-        ConnectConfiguration configuration = ConnectConfiguration.builder(ConnectionType.MySQL)
-                .hostName("localhost:3306")
-                .username("benjamin")
-                .password("benjamin")
-                .databaseName("mtk-demo")
-                .params(params)
-                .build();
-        try {
-            Persistence.configureDatasource(configuration);
-        } catch (ConnectionException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        RecordManagerFactory factory = Persistence.createRecordManagerFactory("simple-dao");
-        RecordManager recordManager = factory.createRecordManager();
-        QueryBuilder query = QueryBuilder.update("user")
-                .setter("username", "hehe")
-                .where("id = 3");
-        recordManager.executeUpdate(query);
-        QueryBuilder insertQuery = QueryBuilder.insert("user")
-                .value("username", "test");
-        recordManager.executeUpdate(insertQuery);
-
-        User user = new User();
-        recordManager.insert(user);
+//        Map<Object, Object> params = new HashMap<>();
+//        params.put("createDatabaseIfNotExist", "true");
+//        ConnectConfiguration configuration = ConnectConfiguration.builder(ConnectionType.MySQL)
+//                .hostName("localhost:3306")
+//                .username("benjamin")
+//                .password("benjamin")
+//                .databaseName("mtk-demo")
+//                .params(params)
+//                .build();
+//        try {
+//            Persistence.configureDatasource(configuration);
+//        } catch (ConnectionException e) {
+//            System.out.println(e.getMessage());
+//            throw new RuntimeException(e);
+//        }
+//        RecordManagerFactory factory = Persistence.createRecordManagerFactory("simple-dao");
+//        RecordManager recordManager = factory.createRecordManager();
+//        QueryBuilder query = QueryBuilder.update("user")
+//                .setter("username", "hehe")
+//                .where("id = 3");
+//        recordManager.executeUpdate(query);
+//        QueryBuilder insertQuery = QueryBuilder.insert("user")
+//                .value("username", "test");
+//        recordManager.executeUpdate(insertQuery);
+//
+//        User user = new User();
+//        recordManager.insert(user);
 //        List<User> users = recordManager.executeQuery(query, User.class);
 //        users.forEach(user -> System.out.println(user.getId() + " " + user.getName()));
+
+        QueryBuilder selectQuery = QueryBuilder.select()
+                .from("user")
+                .groupBy("id")
+                .having("id = 1").or("username = '2'");
+        QueryBuilder selectQuery2 = QueryBuilder.select()
+                .from("user");
+        System.out.println(selectQuery.build());
+        System.out.println(selectQuery2.build());
         Persistence.release("simple-dao");
     }
 }
