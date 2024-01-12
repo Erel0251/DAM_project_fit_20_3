@@ -25,7 +25,7 @@ public class Main {
                 .hostName("localhost:3306")
                 .username("root")
                 .password("auth-service-root-pass-123")
-                .databaseName("mtk-demo")
+                .databaseName("auth_service_database")
                 .params(params)
                 .build();
         try {
@@ -36,27 +36,30 @@ public class Main {
         }
         RecordManagerFactory factory = Persistence.createRecordManagerFactory("simple-dao");
         RecordManager recordManager = factory.createRecordManager();
-        QueryBuilder query = QueryBuilder.update("user")
-                .setter("username", "hehe")
-                .where("id = 3");
-        recordManager.executeUpdate(query);
-        QueryBuilder insertQuery = QueryBuilder.insert("user")
-                .value("username", "test");
-        recordManager.executeUpdate(insertQuery);
+//        QueryBuilder query = QueryBuilder.update("user")
+//                .setter("username", "hehe")
+//                .where("id = 3");
+//        recordManager.executeUpdate(query);
+//        QueryBuilder insertQuery = QueryBuilder.insert("user")
+//                .value("username", "test");
+//        recordManager.executeUpdate(insertQuery);
+//
+//        User user = new User();
+//        recordManager.insert(user);
+//        List<User> users = recordManager.executeQuery(QueryBuilder.select().from("user"), User.class);
+//        users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
+//
+//        QueryBuilder selectQuery = QueryBuilder.select()
+//                .from("user")
+//                .groupBy("id")
+//                .having("id = 1").or("username = '2'");
+//        QueryBuilder selectQuery2 = QueryBuilder.select()
+//                .from("user");
+//        System.out.println(selectQuery.build());
+//        System.out.println(selectQuery2.build());
 
-        User user = new User();
-        recordManager.insert(user);
-        List<User> users = recordManager.executeQuery(QueryBuilder.select().from("user"), User.class);
-        users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
-
-        QueryBuilder selectQuery = QueryBuilder.select()
-                .from("user")
-                .groupBy("id")
-                .having("id = 1").or("username = '2'");
-        QueryBuilder selectQuery2 = QueryBuilder.select()
-                .from("user");
-        System.out.println(selectQuery.build());
-        System.out.println(selectQuery2.build());
+        User newUser = new User(23, "hehe");
+        recordManager.update(newUser);
         Persistence.release("simple-dao");
     }
 }
