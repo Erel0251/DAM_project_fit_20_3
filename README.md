@@ -19,6 +19,34 @@ As a course project, this repository has been established to implement Data Acce
 | 20120075 | Lê Thị Minh Hiền |
 | 20120251 | Trần Đức Anh     |
 
+## UML Diagram
+
+### Overall
+
+- [Class Diagram](https://drive.google.com/file/d/1dBQVoJ7GzuXkMR4KHGckE7iK5IZe3B-x/view?usp=sharing)
+
+![Diagram](assets/img/Database%20Access%20Management.jpg)
+
+### Detail
+
+#### Package Query
+
+- Using Builder with Template Method to create String query for Management package use it.
+
+![Package Query](./assets/img/Query.png)
+
+#### Package Connect
+
+- Using Builder to create URL connection and Factory to create variety connection to different type of database.
+
+![Package Connect](./assets/img/Connection.png)
+
+#### Package Management
+
+- Using Singleton and Factory to public and limit number of connection to database.
+
+![Package Management](./assets/img/Management.png)
+
 ## Prerequisite
 
 Project using Maven build tool and java sdk21 so you should download and install it:
@@ -34,7 +62,7 @@ Use command line to clone the repository
 $ git clone https://github.com/Erel0251/DAM_project_fit_20_3
 ```
 
-Move to Java root folder manually or use command line `cd dam/` from root directory repository
+Move to Java root folder manually through GUI or use CLI `cd dam/` from root directory repository
 
 Build the project
 
@@ -44,9 +72,42 @@ $ mvn package
 
 For more instruction check this: [Maven in five minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 
-## Usage
+## Example
 
-- NaN
+```java
+public class Main {
+    public static void main(String[] args) throws OutOfConnectionException, SQLException, InstantiationException, IllegalAccessException, UnsupportedActionException, InvocationTargetException, NoSuchMethodException {
+        Map<Object, Object> params = new HashMap<>();
+        params.put("createDatabaseIfNotExist", "true");
+        ConnectConfiguration configuration = ConnectConfiguration.builder(ConnectionType.MySQL)
+                .hostName("localhost:3306")
+                .username("benjamin")
+                .password("benjamin")
+                .databaseName("mtk-demo")
+                .params(params)
+                .build();
+        try {
+            Persistence.configureDatasource(configuration);
+        } catch (ConnectionException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        RecordManagerFactory factory = Persistence.createRecordManagerFactory("simple-dao");
+        RecordManager recordManager = factory.createRecordManager();
+        QueryBuilder query = QueryBuilder.update("user")
+                .setter("username", "hehe")
+                .where("id = 3");
+        recordManager.executeUpdate(query);
+        QueryBuilder insertQuery = QueryBuilder.insert("user")
+                .value("username", "test");
+        recordManager.executeUpdate(insertQuery);
+
+        User user = new User();
+        recordManager.insert(user);
+        Persistence.release("simple-dao");
+    }
+}
+```
 
 ## Contributing
 
