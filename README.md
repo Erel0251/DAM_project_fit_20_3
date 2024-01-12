@@ -119,3 +119,7 @@ Please make sure to update tests as appropriate.
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Report
+
+Document: https://studenthcmusedu-my.sharepoint.com/:w:/g/personal/20120068_student_hcmus_edu_vn/ERLtSOuSzmlCgtiAtTn08s0BUtgQOHvjFbmLfXW_tSjQyQ?e=IALIv9
