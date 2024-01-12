@@ -78,9 +78,6 @@ public class RecordMapper {
                 if (field.isAnnotationPresent(Column.class)) {
                     Column column = field.getAnnotation(Column.class);
                     Object columnValue = field.get(object);
-                    if (columnValue != null && field.getType().isAssignableFrom(String.class)) {
-                        columnValue = "'" + columnValue + "'";
-                    }
                     values.put(column.name(), columnValue);
                 }
             }
@@ -113,9 +110,6 @@ public class RecordMapper {
                 if (field.isAnnotationPresent(Column.class)) {
                     Column column = field.getAnnotation(Column.class);
                     Object columnValue = field.get(object);
-                    if (columnValue != null && field.getType().isAssignableFrom(String.class)) {
-                        columnValue = "'" + columnValue + "'";
-                    }
                     setters.put(column.name(), columnValue);
                 }
             }
