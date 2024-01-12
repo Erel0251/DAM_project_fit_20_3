@@ -14,6 +14,7 @@ import com.mtk.sample.User;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -22,8 +23,8 @@ public class Main {
         params.put("createDatabaseIfNotExist", "true");
         ConnectConfiguration configuration = ConnectConfiguration.builder(ConnectionType.MySQL)
                 .hostName("localhost:3306")
-                .username("benjamin")
-                .password("benjamin")
+                .username("root")
+                .password("auth-service-root-pass-123")
                 .databaseName("mtk-demo")
                 .params(params)
                 .build();
@@ -45,8 +46,17 @@ public class Main {
 
         User user = new User();
         recordManager.insert(user);
-//        List<User> users = recordManager.executeQuery(query, User.class);
-//        users.forEach(user -> System.out.println(user.getId() + " " + user.getName()));
+        List<User> users = recordManager.executeQuery(QueryBuilder.select().from("user"), User.class);
+        users.forEach(u -> System.out.println(u.getId() + " " + u.getName()));
+
+        QueryBuilder selectQuery = QueryBuilder.select()
+                .from("user")
+                .groupBy("id")
+                .having("id = 1").or("username = '2'");
+        QueryBuilder selectQuery2 = QueryBuilder.select()
+                .from("user");
+        System.out.println(selectQuery.build());
+        System.out.println(selectQuery2.build());
         Persistence.release("simple-dao");
     }
 }
