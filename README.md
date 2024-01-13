@@ -56,9 +56,11 @@ As a course project, this repository has been established to implement Data Acce
 
 ## Resources
 
-- [Functions List](https://studenthcmusedu-my.sharepoint.com/:x:/g/personal/20120068_student_hcmus_edu_vn/EeDuHJ-qrS1PhBWymBs8C2kBoM5Ls-LOGcB9gVcLOppOIw?e=uu8OY6)
+- [Video Demo](https://www.youtube.com/watch?v=_FLgtI9wu2g)
 
-- [Document](https://studenthcmusedu-my.sharepoint.com/:w:/g/personal/20120068_student_hcmus_edu_vn/ERLtSOuSzmlCgtiAtTn08s0BUtgQOHvjFbmLfXW_tSjQyQ?e=IALIv9)
+- [Functions List](./assets/docs/Functions%20List.pdf)
+
+- [Document](./assets/docs/Report.pdf)
 
 - [Class Diagram](https://drive.google.com/file/d/1dBQVoJ7GzuXkMR4KHGckE7iK5IZe3B-x/view?usp=sharing)
 
