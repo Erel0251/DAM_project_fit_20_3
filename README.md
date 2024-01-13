@@ -2,6 +2,19 @@
 
 As a course project, this repository has been established to implement Data Access Management, packaging it as a framework built on the foundation of JDBC, and incorporating design patterns inspired by the Gang of Four (GoF).
 
+## Index
+
+- [Basic Information](#basic-information)
+- [Members](#members)
+- [Feature](#feature)
+- [Resources](#resources)
+- [UML Diagram](#uml-diagram)
+- [Prerequisite](#prerequisite)
+- [Installation](#installation)
+- [Example](#example)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Basic Information
 
 - Course: Object Oriented Design Patterns and Applications
@@ -19,31 +32,55 @@ As a course project, this repository has been established to implement Data Acce
 | 20120075 | Lê Thị Minh Hiền |
 | 20120251 | Trần Đức Anh     |
 
-## UML Diagram
 
-### Overall
+## Feature
+
+- [x] Connect to Database
+- [x] Query
+  - [x] Operation
+    - [x] Insert
+    - [x] Select
+    - [x] Update
+    - [x] Delete
+  - [x] Objection
+    - [x] Table
+    - [x] From
+    - [x] Join
+    - [x] Group By
+  - [x] Condition
+    - [x] And
+    - [x] Or
+    - [x] Where
+    - [x] Having
+- [x] Close Connection
+
+## Resources
+
+- [Functions List](https://studenthcmusedu-my.sharepoint.com/:x:/g/personal/20120068_student_hcmus_edu_vn/EeDuHJ-qrS1PhBWymBs8C2kBoM5Ls-LOGcB9gVcLOppOIw?e=uu8OY6)
+
+- [Document](https://studenthcmusedu-my.sharepoint.com/:w:/g/personal/20120068_student_hcmus_edu_vn/ERLtSOuSzmlCgtiAtTn08s0BUtgQOHvjFbmLfXW_tSjQyQ?e=IALIv9)
 
 - [Class Diagram](https://drive.google.com/file/d/1dBQVoJ7GzuXkMR4KHGckE7iK5IZe3B-x/view?usp=sharing)
 
-![Diagram](assets/img/Database%20Access%20Management.jpg)
+### UML Diagram
 
-### Detail
+![Diagram](assets/img/Database%20Access%20Management.jpg)
 
 #### Package Query
 
-- Using Builder with Template Method to create String query for Management package use it.
+- Using Factory to create different type of Query and Builder to build up String query for Management package use it.
 
 ![Package Query](./assets/img/Query.png)
 
 #### Package Connect
 
-- Using Builder to create URL connection and Factory to create variety connection to different type of database.
+- Using Builder to create URL connection, Factory to create variety connection to different type of database and Adapter to store Connection of JDBC.
 
 ![Package Connect](./assets/img/Connection.png)
 
 #### Package Management
 
-- Using Singleton and Factory to public and limit number of connection to database.
+- Using Singleton and Object Pool to public and limit number of connection to database, Adapter and Factory to store Query, Connect.
 
 ![Package Management](./assets/img/Management.png)
 
@@ -119,8 +156,3 @@ Please make sure to update tests as appropriate.
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
-## Report
-
-- Functions List: https://studenthcmusedu-my.sharepoint.com/:x:/g/personal/20120068_student_hcmus_edu_vn/EeDuHJ-qrS1PhBWymBs8C2kBoM5Ls-LOGcB9gVcLOppOIw?e=uu8OY6
-- Document: https://studenthcmusedu-my.sharepoint.com/:w:/g/personal/20120068_student_hcmus_edu_vn/ERLtSOuSzmlCgtiAtTn08s0BUtgQOHvjFbmLfXW_tSjQyQ?e=IALIv9
