@@ -122,4 +122,5 @@ Please make sure to update tests as appropriate.
 
 ## Report
 
+Functions List: https://studenthcmusedu-my.sharepoint.com/:x:/g/personal/20120068_student_hcmus_edu_vn/EeDuHJ-qrS1PhBWymBs8C2kBoM5Ls-LOGcB9gVcLOppOIw?e=uu8OY6
 Document: https://studenthcmusedu-my.sharepoint.com/:w:/g/personal/20120068_student_hcmus_edu_vn/ERLtSOuSzmlCgtiAtTn08s0BUtgQOHvjFbmLfXW_tSjQyQ?e=IALIv9
